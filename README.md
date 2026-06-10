@@ -174,10 +174,4 @@ O banco foi modelado e administrado via **MySQL Workbench**. As principais tabel
 
 ---
 
-## 🤝 Contribuindo
-
-Contribuições são bem-vindas! Sinta-se à vontade para abrir uma *issue* ou enviar um *pull request*.
-
----
-
 > Desenvolvido com ⚽ durante a Copa do Mundo FIFA 2026.
