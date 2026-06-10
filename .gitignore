@@ -1,4 +1,4 @@
-.env 
-_pycache__/
+.env
+__pycache__/
 *.pyc
 *.pyo
