@@ -454,6 +454,21 @@ a { text-decoration: none; color: inherit; }
   text-transform: uppercase;
 }
 
+<<<<<<< HEAD
+/* ── Dash internal overrides ─────────────────────────────── */
+/* Remove default Dash padding wrappers */
+#_pages_content { height: 100%; }
+.dash-graph { margin: 0; }
+
+/* ── Table row hover ─────────────────────────────────────── */
+.tr-hover:hover { background-color: #f8fafc !important; }
+
+/* ── Estadio card hover ───────────────────────────────────── */
+.estadio-card:hover {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 4px 16px rgba(59,130,246,.10) !important;
+}
+=======
 /* Dash Dropdown override */
 .filter-dropdown .Select-control,
 .field-dropdown  .Select-control {
@@ -802,3 +817,4 @@ a { text-decoration: none; color: inherit; }
   transition: color 0.15s;
 }
 .link-add-estadio:hover { color: #1D4ED8; text-decoration: underline; }
+>>>>>>> 8915bca9d65413b24b30fa60e4506642b1895df5
