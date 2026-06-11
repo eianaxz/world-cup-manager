@@ -1,153 +1,174 @@
-"""
-World Cup Manager 2026 — app.py
-Entry point: multi-page Dash application with sidebar navigation.
-"""
-
 import dash
-from dash import html, dcc, Input, Output
-import dash_bootstrap_components as dbc
+from dash import Dash, html, dcc, Input, Output, State, no_update
 
-# Font Awesome for professional icons
-FA = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
-GOOGLE_FONTS = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+FONT_AWESOME = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+GOOGLE_FONT = "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
 
-app = dash.Dash(
+app = Dash(
     __name__,
     use_pages=True,
     suppress_callback_exceptions=True,
-    external_stylesheets=[FA, GOOGLE_FONTS],
-    meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}],
+    external_stylesheets=[FONT_AWESOME, GOOGLE_FONT],
 )
-app.title = "World Cup Manager 2026"
-server = app.server  # for gunicorn / production deployment
+server = app.server
 
-# ─── Sidebar Navigation Items ────────────────────────────────────────────────
-NAV_ITEMS = [
-    {"label": "Dashboard",          "href": "/",            "icon": "fa-solid fa-chart-pie",         "id": "nav-dashboard"},
-    {"label": "Seleções",           "href": "/selecoes",    "icon": "fa-solid fa-flag",              "id": "nav-selecoes"},
-    {"label": "Jogadores",          "href": "/jogadores",   "icon": "fa-solid fa-shirt",             "id": "nav-jogadores"},
-    {"label": "Estádios",           "href": "/estadios",    "icon": "fa-solid fa-map-location-dot",  "id": "nav-estadios"},
-    {"label": "Partidas",           "href": "/partidas",    "icon": "fa-solid fa-calendar-check",    "id": "nav-partidas"},
-    {"label": "Ranking de Vitórias","href": "/ranking",     "icon": "fa-solid fa-ranking-star",      "id": "nav-ranking"},
+AUTH_ROUTES = {"/login", "/cadastro", "/verificar"}
+
+MENU_ITEMS = [
+    ("Dashboard", "fa-solid fa-chart-pie", "/dashboard"),
+    ("Seleções", "fa-solid fa-flag", "/selecoes"),
+    ("Jogadores", "fa-solid fa-shirt", "/jogadores"),
+    ("Estádios", "fa-solid fa-map-location-dot", "/estadios"),
+    ("Partidas", "fa-solid fa-calendar-check", "/partidas"),
+    ("Ranking de Vitórias", "fa-solid fa-ranking-star", "/ranking"),
+    ("Perfil", "fa-solid fa-circle-user", "/perfil"),
 ]
 
-def build_nav_links(current_pathname):
-    """Returns sidebar nav buttons with active state based on current pathname."""
+
+def _sidebar(pathname: str):
+    pathname = pathname or "/dashboard"
     links = []
-    for item in NAV_ITEMS:
-        is_active = (current_pathname == item["href"]) or \
-                    (item["href"] == "/" and current_pathname in ["/", ""])
+    for label, icon, href in MENU_ITEMS:
+        active = pathname == href or (href == "/dashboard" and pathname == "/")
         links.append(
             dcc.Link(
                 html.Div([
-                    html.I(className=f"{item['icon']} sidebar-icon"),
-                    html.Span(item["label"], className="sidebar-label"),
-                ], className=f"sidebar-btn {'sidebar-btn-active' if is_active else ''}"),
-                href=item["href"],
-                id=item["id"],
+                    html.I(className=f"{icon} sidebar-icon"),
+                    html.Span(label, className="sidebar-label"),
+                ], className="sidebar-btn sidebar-btn-active" if active else "sidebar-btn"),
+                href=href,
                 className="sidebar-link",
             )
         )
-    return links
 
-# ─── Sidebar Geometric Art (bottom decoration) ───────────────────────────────
-sidebar_art = html.Div(
-    [
-        # Coloured circles overlay
-        html.Div(className="geom-circle c-green"),
-        html.Div(className="geom-circle c-blue"),
-        html.Div(className="geom-circle c-red"),
-        html.Div(className="geom-circle c-orange"),
-        html.Div(className="geom-circle c-purple"),
-        html.Div(className="geom-circle c-yellow"),
-        # Label + online badge
-        html.Div([
-            html.P("Administrador", className="admin-label"),
-            html.Div([
-                html.Span(className="online-dot"),
-                html.Span("Online", className="online-text"),
-            ], className="online-row"),
-        ], className="admin-info"),
-    ],
-    className="panini-art",
-)
-
-# ─── Sidebar ─────────────────────────────────────────────────────────────────
-sidebar = html.Aside(
-    [
-        # Logo
+    return html.Aside([
         html.Div([
             html.Div([
                 html.Div([
-                    html.I(className="fa-solid fa-futbol sidebar-ball-icon"),
-                ], className="logo-inner"),
-            ], className="logo-ring"),
+                    html.Div([html.I(className="fa-solid fa-futbol sidebar-ball-icon")], className="logo-inner"),
+                ], className="logo-ring"),
+                html.Div([
+                    html.Span("WORLD CUP", className="logo-title"),
+                    html.Span("MANAGER", className="logo-sub"),
+                ], className="logo-text"),
+            ], className="logo-wrap"),
+            html.Nav(links, className="sidebar-nav"),
+        ]),
+        html.Div([
+            html.Div(className="geom-circle c-green"),
+            html.Div(className="geom-circle c-blue"),
+            html.Div(className="geom-circle c-red"),
+            html.Div(className="geom-circle c-orange"),
+            html.Div(className="geom-circle c-purple"),
+            html.Div(className="geom-circle c-yellow"),
             html.Div([
-                html.Span("WORLD CUP", className="logo-title"),
-                html.Span("MANAGER",   className="logo-sub"),
-            ], className="logo-text"),
-        ], className="logo-wrap"),
+                html.Div("ADMINISTRADOR", className="admin-label"),
+                html.Div([
+                    html.Span(className="online-dot"),
+                    html.Span("Online", className="online-text"),
+                ], className="online-row"),
+            ], className="admin-info"),
+        ], className="panini-art"),
+    ], className="sidebar")
 
-        # Navigation — dynamically re-rendered on pathname change
-        html.Nav(id="sidebar-nav", className="sidebar-nav"),
 
-        # Bottom art
-        sidebar_art,
-    ],
-    className="sidebar",
-)
-
-# ─── Topbar ──────────────────────────────────────────────────────────────────
-topbar = html.Header(
-    [
-        # Search
+def _topbar():
+    return html.Header([
         html.Div([
             html.I(className="fa-solid fa-magnifying-glass search-icon"),
             dcc.Input(
                 placeholder="Buscar seleções, estádios ou jogadores...",
-                type="text",
                 className="search-input",
-                debounce=False,
+                type="text",
             ),
         ], className="search-wrap"),
-
-        # Right: notification + profile
         html.Div([
-            html.Button(
+            html.Button([
                 html.I(className="fa-regular fa-bell"),
-                className="notif-btn",
-            ),
+                html.Span("", id="notif-badge", className="notif-badge notif-badge-hidden"),
+            ], id="btn-notif", className="notif-btn-clean"),
             html.Div(className="topbar-divider"),
-            html.Div([
+            dcc.Link([
                 html.Div([
-                    html.P("Master Admin",       className="profile-name"),
-                    html.Span("root@fifa-replica", className="profile-tag"),
+                    html.Div(id="topbar-name", className="profile-name"),
+                    html.Div(id="topbar-email", className="profile-tag"),
                 ], className="profile-info"),
-                html.Div("MA", className="avatar"),
-            ], className="profile-wrap"),
+                html.Div(id="topbar-avatar", className="avatar"),
+            ], href="/perfil", className="profile-link"),
         ], className="topbar-right"),
-    ],
-    className="topbar",
-)
+    ], className="topbar")
 
-# ─── Root layout ─────────────────────────────────────────────────────────────
-app.layout = html.Div(
-    [
-        dcc.Location(id="url", refresh=False),
-        sidebar,
-        html.Div(
-            [topbar, html.Main(dash.page_container, className="page-main")],
-            className="content-col",
-        ),
-    ],
-    className="root-wrap",
-)
 
-# ─── Callback: highlight active nav link ─────────────────────────────────────
-@app.callback(Output("sidebar-nav", "children"), Input("url", "pathname"))
-def update_nav(pathname):
-    return build_nav_links(pathname or "/")
+def _main_shell(pathname):
+    return html.Div([
+        _sidebar(pathname),
+        html.Div([
+            _topbar(),
+            html.Main(dash.page_container, className="page-main"),
+        ], className="content-col"),
+    ], className="root-wrap")
+
+
+def _auth_shell():
+    return html.Div(
+        html.Main(dash.page_container, className="auth-page-main"),
+        className="auth-shell",
+    )
+
+
+app.layout = html.Div([
+    dcc.Location(id="url", refresh=False),
+    dcc.Store(id="user-store", storage_type="local"),
+    dcc.Store(id="alerts-store", storage_type="local", data=[]),
+    dcc.Location(id="perfil-redirect", refresh=True),
+    html.Div(id="app-shell"),
+    
+
+])
+
+app.validation_layout = html.Div([
+    app.layout,
+    dash.page_container,
+])
+
+
+@app.callback(
+    Output("app-shell", "children"),
+    Output("url", "pathname"),
+    Input("url", "pathname"),
+    State("user-store", "data"),
+)
+def render_shell(pathname, user_data):
+    pathname = pathname or "/login"
+
+    if pathname == "/":
+        return no_update, "/login"
+
+    if pathname in AUTH_ROUTES:
+        return _auth_shell(), no_update
+
+    if not user_data:
+        return no_update, "/login"
+
+    return _main_shell(pathname), no_update
+
+
+@app.callback(
+    Output("topbar-name", "children"),
+    Output("topbar-email", "children"),
+    Output("topbar-avatar", "children"),
+    Input("user-store", "data"),
+)
+def update_topbar(user_data):
+    if not user_data:
+        return "Master Admin", "root@fifa-replica", "MA"
+    nome = user_data.get("nome") or "Master Admin"
+    email = user_data.get("email") or "root@fifa-replica"
+    initials = user_data.get("initials") or "MA"
+    return nome, email, initials
+
+
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="127.0.0.1", port=8050, debug=True)

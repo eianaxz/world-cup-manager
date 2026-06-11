@@ -167,6 +167,7 @@ a { text-decoration: none; color: inherit; }
   padding: 0 32px;
   z-index: 10;
   box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  position: relative;
 }
 
 .search-wrap { position: relative; width: 340px; }
@@ -194,8 +195,10 @@ a { text-decoration: none; color: inherit; }
 .search-input:focus { border-color: #3B82F6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
 .search-input::placeholder { color: #94A3B8; }
 
-.topbar-right { display: flex; align-items: center; gap: 18px; }
-.notif-btn {
+.topbar-right { display: flex; align-items: center; gap: 18px; position: relative; }
+
+/* Sino sem ::after fixo — o badge é um elemento real */
+.notif-btn-clean {
   background: none;
   border: none;
   cursor: pointer;
@@ -204,19 +207,114 @@ a { text-decoration: none; color: inherit; }
   position: relative;
   padding: 4px;
   transition: color 0.15s;
+  display: flex;
+  align-items: center;
 }
-.notif-btn:hover { color: #475569; }
-.notif-btn::after {
-  content: '';
+.notif-btn-clean:hover { color: #475569; }
+
+.notif-badge {
   position: absolute;
-  top: 2px; right: 2px;
-  width: 8px; height: 8px;
+  top: -2px;
+  right: -2px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
   background: #EF4444;
-  border-radius: 50%;
+  border-radius: 99px;
   border: 2px solid white;
+  font-size: 9px;
+  font-weight: 800;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
 }
+.notif-badge-hidden { display: none; }
+
+/* Dropdown de notificações */
+.notif-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 320px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 16px;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.10);
+  z-index: 500;
+  overflow: hidden;
+}
+.notif-dropdown-hidden  { display: none; }
+.notif-dropdown-visible { display: block; }
+
+.notif-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  border-bottom: 1px solid #F1F5F9;
+  background: #F8FAFC;
+}
+.notif-title {
+  font-size: 10px;
+  font-weight: 800;
+  color: #1E293B;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.btn-mark-read {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  color: #3B82F6;
+  font-family: 'Inter', sans-serif;
+  transition: color 0.15s;
+}
+.btn-mark-read:hover { color: #1D4ED8; }
+
+.notif-list {
+  max-height: 320px;
+  overflow-y: auto;
+}
+.notif-list::-webkit-scrollbar { width: 4px; }
+.notif-list::-webkit-scrollbar-thumb { background: #E2E8F0; border-radius: 99px; }
+
+.notif-empty {
+  padding: 24px 16px;
+  text-align: center;
+  font-size: 12px;
+  color: #94A3B8;
+}
+
+.notif-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid #F1F5F9;
+  transition: background 0.12s;
+}
+.notif-item:last-child { border-bottom: none; }
+.notif-item:hover { background: #F8FAFC; }
+.notif-item-unread { background: #EFF6FF; }
+.notif-item-unread:hover { background: #DBEAFE; }
+
+.notif-item-icon { font-size: 13px; margin-top: 1px; flex-shrink: 0; }
+.notif-ic-green  { color: #10B981; }
+.notif-ic-orange { color: #F97316; }
+.notif-ic-blue   { color: #3B82F6; }
+
+.notif-item-body { display: flex; flex-direction: column; gap: 2px; }
+.notif-item-msg  { font-size: 12px; font-weight: 600; color: #1E293B; line-height: 1.4; }
+.notif-item-time { font-size: 10px; color: #94A3B8; }
+
 .topbar-divider { width: 1px; height: 24px; background: #E2E8F0; }
-.profile-wrap { display: flex; align-items: center; gap: 12px; }
+
+.profile-wrap { display: flex; align-items: center; gap: 12px; cursor: pointer; }
+.profile-link { display: flex; align-items: center; }
 .profile-info { text-align: right; }
 .profile-name { font-size: 12px; font-weight: 700; color: #1E293B; line-height: 1.2; }
 .profile-tag {
@@ -359,7 +457,6 @@ a { text-decoration: none; color: inherit; }
    JOGADORES PAGE
    ========================================================= */
 
-/* Page wrap — sem margin/padding próprios; herda o padding do .page-main */
 .page-wrap {
   display: flex;
   flex-direction: column;
@@ -368,7 +465,6 @@ a { text-decoration: none; color: inherit; }
   padding: 0;
 }
 
-/* Header row: título à esquerda, botão à direita, alinhados ao centro */
 .page-header-row {
   display: flex;
   align-items: center;
@@ -454,11 +550,6 @@ a { text-decoration: none; color: inherit; }
   text-transform: uppercase;
 }
 
-/* ── Dash internal overrides ─────────────────────────────── */
-/* Remove default Dash padding wrappers */
-#_pages_content { height: 100%; }
-.dash-graph { margin: 0; }
-
 /* ── Table row hover ─────────────────────────────────────── */
 .tr-hover:hover { background-color: #f8fafc !important; }
 
@@ -467,6 +558,7 @@ a { text-decoration: none; color: inherit; }
     border-color: #3b82f6 !important;
     box-shadow: 0 4px 16px rgba(59,130,246,.10) !important;
 }
+
 /* Dash Dropdown override */
 .filter-dropdown .Select-control,
 .field-dropdown  .Select-control {
@@ -562,34 +654,24 @@ a { text-decoration: none; color: inherit; }
 .action-delete:hover { background: #FEF2F2; color: #EF4444; border-color: #FECACA; }
 
 /* =========================================================
-   MODAL — centralização fixa, independente do scroll da página
-   
-   Requisito [1]: position fixed, top 0, left 0, 100vw × 100vh,
-   flex para centralizar, scroll interno no body do modal.
+   MODAL
    ========================================================= */
 .modal-overlay {
-  /* Cobre TODA a viewport, fixo — não segue o scroll da página */
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
-
-  /* Flex para centralizar vertical + horizontal */
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 20px;
-
-  /* Acima de qualquer conteúdo da página */
   z-index: 1000;
 }
 
-/* Esconder / mostrar sem conflito com display:flex acima */
 .modal-hidden  { display: none !important; }
 .modal-visible { display: flex  !important; }
 
@@ -599,20 +681,15 @@ a { text-decoration: none; color: inherit; }
   border-radius: 20px;
   width: 100%;
   max-width: 480px;
-
-  /* Garante que o modal não ultrapasse a viewport verticalmente */
   max-height: calc(100vh - 40px);
-
   display: flex;
   flex-direction: column;
-
   box-shadow: 0 20px 60px rgba(0,0,0,0.14);
   overflow: hidden;
   animation: fadeIn 0.2s ease forwards;
 }
 .modal-box-sm { max-width: 380px; }
 
-/* Modal header — fixo no topo da caixa */
 .modal-header {
   flex-shrink: 0;
   background: #F8FAFC;
@@ -644,7 +721,6 @@ a { text-decoration: none; color: inherit; }
 }
 .modal-close:hover { color: #475569; background: #F1F5F9; }
 
-/* Modal body — ocupa o espaço restante e permite scroll interno */
 .modal-body {
   flex: 1;
   padding: 22px 20px;
@@ -653,13 +729,12 @@ a { text-decoration: none; color: inherit; }
   gap: 16px;
 }
 .modal-body-scroll {
-  overflow-y: auto;   /* scroll interno apenas quando o conteúdo for grande */
+  overflow-y: auto;
 }
 .modal-body-scroll::-webkit-scrollbar { width: 4px; }
 .modal-body-scroll::-webkit-scrollbar-track { background: transparent; }
 .modal-body-scroll::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 99px; }
 
-/* Modal footer — fixo no rodapé da caixa */
 .modal-footer {
   flex-shrink: 0;
   padding: 14px 20px;
@@ -698,7 +773,6 @@ a { text-decoration: none; color: inherit; }
 .two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .half-col { display: flex; flex-direction: column; gap: 6px; }
 
-/* Inline validation error */
 .modal-error {
   font-size: 11px;
   color: #EF4444;
@@ -707,19 +781,17 @@ a { text-decoration: none; color: inherit; }
   line-height: 1.4;
 }
 
-/* Confirm modal */
 .confirm-icon { color: #F59E0B; font-size: 18px; }
 .confirm-msg  { font-size: 13px; color: #475569; padding: 16px 20px 0; line-height: 1.5; }
 
 /* =========================================================
-   TOAST — feedback visual de operações CRUD
-   Requisito [7]: fixo no canto superior direito, some em 3 s
+   TOAST
    ========================================================= */
 .toast {
   position: fixed;
   top: 24px;
   right: 24px;
-  z-index: 2000;       /* acima dos modais */
+  z-index: 2000;
   display: flex;
   align-items: center;
   gap: 10px;
@@ -743,8 +815,7 @@ a { text-decoration: none; color: inherit; }
 .toast-icon-error   { color: #EF4444; }
 
 /* =========================================================
-   HINT ROW — "Nao encontrou a selecao?"
-   Requisito [10]
+   HINT ROW
    ========================================================= */
 .hint-row {
   display: flex;
@@ -768,16 +839,13 @@ a { text-decoration: none; color: inherit; }
 .link-add-selecao:hover { color: #1D4ED8; text-decoration: underline; }
 
 /* =========================================================
-   PARTIDAS PAGE — adições ao assets/styles.css
-   Copiar ao final do arquivo styles.css existente
+   PARTIDAS PAGE
    ========================================================= */
 
-/* Filter card com 3 colunas para a tela de partidas */
 .filter-card-3col {
   grid-template-columns: 1fr 1fr 1fr;
 }
 
-/* DatePickerSingle — override para visual consistente */
 .SingleDatePickerInput {
   background: #F8FAFC !important;
   border: 1px solid #E2E8F0 !important;
@@ -806,7 +874,6 @@ a { text-decoration: none; color: inherit; }
   z-index: 1100 !important;
 }
 
-/* Link de redirecionamento hint (estádio) */
 .link-add-estadio {
   font-size: 11px;
   font-weight: 700;
@@ -815,3 +882,311 @@ a { text-decoration: none; color: inherit; }
   transition: color 0.15s;
 }
 .link-add-estadio:hover { color: #1D4ED8; text-decoration: underline; }
+
+/* =========================================================
+   APP SHELL — alterna entre layout auth e layout principal
+   ========================================================= */
+
+/* Shell no modo principal: flex com sidebar à esquerda */
+.root-wrap {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Shell no modo auth: ocupa a tela inteira sem flex de sidebar */
+.auth-shell {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Page-main no modo auth: sem padding, ocupa tela toda */
+.auth-page-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+  height: 100vh;
+}
+
+/* =========================================================
+   AUTH PAGE
+   ========================================================= */
+
+.auth-wrap {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Lado esquerdo escuro */
+.auth-left {
+  width: 420px;
+  min-width: 420px;
+  background: #0B1229;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 48px 44px;
+  position: relative;
+  overflow: hidden;
+}
+@media (max-width: 900px) { .auth-left { display: none; } }
+
+.auth-logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 10;
+}
+.auth-logo-ring {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #FACC15, #EF4444, #3B82F6);
+  padding: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.auth-logo-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.auth-ball-icon { color: #0B1229; font-size: 20px; }
+.auth-logo-text { display: flex; flex-direction: column; line-height: 1; }
+.auth-logo-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: white;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.auth-logo-sub {
+  font-size: 10px;
+  font-weight: 700;
+  color: #60A5FA;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+
+.auth-tagline {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.70);
+  line-height: 1.65;
+  position: relative;
+  z-index: 10;
+  max-width: 300px;
+}
+
+/* Círculos decorativos do lado esquerdo */
+.auth-circle { position: absolute; border-radius: 50%; }
+.ac-green  { width: 200px; height: 200px; background: #A3E635; bottom: -70px; left: -70px;   opacity: 0.25; }
+.ac-blue   { width: 170px; height: 170px; background: #1D4ED8; bottom: -40px; right: -60px;  opacity: 0.22; }
+.ac-red    { width: 150px; height: 150px; background: #DC2626; bottom: -90px; left: 80px;    opacity: 0.20; }
+.ac-orange { width: 120px; height: 120px; background: #EA580C; bottom: 80px;  right: -20px;  opacity: 0.28; }
+.ac-purple { width: 100px; height: 100px; background: #7C3AED; bottom: 60px;  left: 40px;    opacity: 0.24; }
+.ac-yellow { width: 80px;  height: 80px;  background: #FACC15; bottom: 120px; left: 160px;   opacity: 0.30; }
+
+/* Lado direito — card do formulário */
+.auth-right {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F8FAFC;
+  padding: 32px 24px;
+  overflow-y: auto;
+}
+
+.auth-form-inner {
+  width: 100%;
+  max-width: 400px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  border-radius: 24px;
+  padding: 36px 32px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.auth-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0F172A;
+  line-height: 1.2;
+}
+.auth-sub {
+  font-size: 12px;
+  color: #64748B;
+  line-height: 1.5;
+  margin-top: -10px;
+}
+
+/* Campo com ícone interno */
+.auth-field-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.auth-field-icon {
+  position: absolute;
+  left: 12px;
+  color: #94A3B8;
+  font-size: 11px;
+  pointer-events: none;
+  z-index: 1;
+}
+.auth-field-padded {
+  padding-left: 34px !important;
+}
+
+/* Botão full-width */
+.auth-btn-full {
+  width: 100%;
+  justify-content: center;
+}
+.auth-btn-mt { margin-top: 6px; }
+
+/* Hint centrado */
+.auth-hint-center {
+  justify-content: center;
+  margin-top: -6px;
+}
+
+/* Verificação */
+.auth-verify-icon-wrap {
+  display: flex;
+  justify-content: center;
+  margin-bottom: -6px;
+}
+.auth-verify-icon {
+  font-size: 36px;
+  color: #3B82F6;
+}
+.auth-code-input {
+  letter-spacing: 0.3em;
+  font-size: 18px !important;
+  font-weight: 800;
+  text-align: center;
+}
+
+/* =========================================================
+   PERFIL PAGE
+   ========================================================= */
+
+.perfil-card {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.perfil-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #3B82F6, #1D4ED8);
+  color: white;
+  font-size: 22px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 3px solid #E2E8F0;
+  letter-spacing: 0.05em;
+}
+
+.perfil-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 200px;
+}
+
+.perfil-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0F172A;
+}
+.perfil-email {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+}
+.perfil-nac {
+  font-size: 12px;
+  color: #64748B;
+  font-weight: 500;
+}
+.perfil-senha-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+.perfil-field-label {
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: 600;
+}
+.perfil-senha {
+  font-size: 14px;
+  color: #475569;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+}
+
+.perfil-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+@media (max-width: 700px) {
+  .perfil-card { flex-direction: column; align-items: flex-start; }
+  .perfil-actions { flex-direction: row; align-items: center; }
+}
+/* ===== Correções finais: topbar alinhada à direita ===== */
+.topbar {
+  justify-content: space-between !important;
+  width: 100% !important;
+}
+.topbar-right {
+  margin-left: auto !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  min-width: 280px;
+}
+.profile-link {
+  display: flex !important;
+  align-items: center !important;
+  gap: 12px !important;
+  text-decoration: none !important;
+  color: inherit !important;
+}
+.profile-info {
+  text-align: right !important;
+  min-width: 120px;
+}
+.profile-name,
+.profile-tag {
+  display: block !important;
+  white-space: nowrap !important;
+}
