@@ -9,7 +9,7 @@ from dash import html, dcc, callback, Output, Input
 import plotly.graph_objects as go
 import pandas as pd
 
-dash.register_page(__name__, path="/", name="Dashboard")
+dash.register_page(__name__, path="/dashboard", name="Dashboard")
 
 # ── Mesma constante do ranking.py — manter sincronizadas ─────────────────────
 RANKING_PROCEDURE = "sp_ranking_vitorias"
@@ -247,8 +247,8 @@ def refresh_stats(_):
     n_partidas  = _count("SELECT COUNT(*) AS total FROM partidas")
 
     gols_df = _safe_fetch(
-        "SELECT COALESCE(SUM(gols_mandante + gols_visitante), 0) AS total FROM partidas"
-        # ↑ Substitua gols_mandante / gols_visitante pelos nomes reais das colunas
+        "SELECT COALESCE(SUM(quantidade_gols_selecao_1 + quantidade_gols_selecao_2), 0) AS total FROM partidas"
+        # Colunas reais do DER: quantidade_gols_selecao_1 e quantidade_gols_selecao_2
     )
     total_gols = int(gols_df["total"].iloc[0]) if not gols_df.empty and "total" in gols_df.columns else 0
     media_gols = f"{(total_gols / n_partidas):.2f}" if n_partidas > 0 else "0.00"
