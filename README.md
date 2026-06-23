@@ -1,177 +1,150 @@
-# 🏆 World Cup Manager 2026
+# World Cup Manager 2026
 
-Dashboard web interativo para visualização e análise de dados da Copa do Mundo FIFA 2026. A aplicação conta com navegação multi-página, sidebar dinâmica e gráficos interativos, consumindo dados de um banco MySQL via Python.
-
----
-
-## 📋 Sobre o Projeto
-
-O **World Cup Manager 2026** é um painel de controle completo que permite explorar estatísticas do torneio de forma visual e interativa. A navegação é feita por uma sidebar com páginas dedicadas a seleções, jogadores, estádios, partidas e ranking de vitórias.
+Dashboard web interativo para gerenciamento e análise de dados da Copa do Mundo FIFA 2026 — desenvolvido com Python, Dash e MySQL.
 
 ---
 
-## 🛠️ Tecnologias Utilizadas
+## Visão Geral
 
-| Tecnologia | Versão | Finalidade |
-|---|---|---|
-| **Python** | 3.x | Linguagem principal |
-| **Dash** | 4.1.0 | Framework do dashboard web multi-página |
-| **Dash Bootstrap Components** | 2.0.4 | Componentes de layout responsivo |
-| **Plotly** | 6.7.0 | Gráficos interativos |
-| **Pandas** | 3.0.3 | Manipulação e transformação dos dados |
-| **mysql-connector-python** | 9.7.0 | Conexão com o banco de dados MySQL |
-| **MySQL Workbench** | — | Modelagem e administração do banco |
-| **CSS** | — | Estilização customizada da interface |
-| **python-dotenv** | 1.1.0 | Gerenciamento de variáveis de ambiente |
-| **Flask** | 3.1.3 | Servidor subjacente ao Dash |
+O World Cup Manager 2026 é uma aplicação web completa que centraliza o gerenciamento de informações relacionadas à Copa do Mundo FIFA 2026. Por meio de uma interface moderna e responsiva, o sistema permite visualizar, cadastrar, editar e excluir dados sobre seleções, jogadores, estádios e partidas, com todos os dados persistidos em um banco de dados MySQL hospedado na nuvem via Railway.
+
+A aplicação conta com um dashboard analítico, ranking dinâmico de vitórias e integração direta com o banco de dados, incluindo triggers que definem automaticamente o vencedor de cada partida com base nos gols registrados.
 
 ---
 
-## 📁 Estrutura do Projeto
+## Funcionalidades
+
+- Cadastro, edição e exclusão de seleções participantes
+- Gerenciamento completo de jogadores vinculados às seleções
+- Controle de estádios e suas informações
+- Registro e acompanhamento de partidas com atualização automática do vencedor
+- Dashboard geral com visualizações analíticas
+- Ranking de vitórias por seleção
+
+---
+
+## Tecnologias
+
+| Categoria         | Tecnologia                    | Versão  |
+|-------------------|-------------------------------|---------|
+| Linguagem         | Python                        | 3.x     |
+| Framework Web     | Dash                          | 4.1.0   |
+| Componentes UI    | Dash Bootstrap Components     | 2.0.4   |
+| Visualização      | Plotly                        | 6.7.0   |
+| Manipulação de Dados | Pandas                     | 3.0.3   |
+| Computação        | NumPy                         | 2.3.1   |
+| Banco de Dados    | MySQL + mysql-connector-python| 9.7.0   |
+| Variáveis de Ambiente | python-dotenv             | 1.1.0   |
+| Servidor HTTP     | Flask                         | 3.1.3   |
+| Infraestrutura    | Railway                       | —       |
+| Frontend          | HTML, CSS, JavaScript         | —       |
+
+---
+
+## Acesso pelo Servidor
+
+O sistema está hospedado e pode ser acessado diretamente pelo navegador, sem necessidade de instalação local:
 
 ```
+https://world-cup-manager.onrender.com
+```
+
+Basta abrir o link acima em qualquer navegador moderno para utilizar a aplicação completa.
+
+---
+
+## Execução Local
+
+Como alternativa, é possível rodar o projeto localmente seguindo os passos abaixo:
+
+```bash
+git clone https://github.com/eianaxz/world-cup-manager.git
+cd world-cup-manager
+pip install -r requirements.txt
+python app.py
+```
+
+Antes de executar, crie um arquivo `.env` na raiz do projeto com as variáveis de conexão ao banco de dados:
+
+```env
+DB_HOST=seu_host
+DB_PORT=sua_porta
+DB_USER=seu_usuario
+DB_PASSWORD=sua_senha
+DB_NAME=nome_do_banco
+```
+
+As credenciais reais de acesso ao banco não são publicadas neste repositório.
+
+---
+
+## Estrutura do Projeto
+
+```text
 world-cup-manager-2026/
 │
-├── pages/                     # Páginas da aplicação (multi-page Dash)
-│   ├── dashboard.py           # Página inicial com visão geral
-│   ├── selecoes.py            # Dados das seleções
-│   ├── jogadores.py           # Elencos e estatísticas de jogadores
-│   ├── estadios.py            # Informações dos estádios
-│   ├── partidas.py            # Resultados e calendário de partidas
-│   └── ranking.py             # Ranking de vitórias
+├── pages/
+│   ├── dashboard.py
+│   ├── selecoes.py
+│   ├── jogadores.py
+│   ├── estadios.py
+│   ├── partidas.py
+│   └── ranking.py
 │
 ├── assets/
-│   └── style.css              # Estilos customizados (sidebar, topbar, layout)
+│   └── style.css
 │
 ├── database/
-│   └── connection.py          # Configuração da conexão com o MySQL
+│   └── connection.py
 │
-├── app.py                     # Entry point — layout principal e sidebar
-├── requirements.txt           # Dependências do projeto
+├── app.py
+├── requirements.txt
 └── README.md
 ```
 
 ---
 
-## 🗺️ Páginas da Aplicação
+## Páginas da Aplicação
 
-| Rota | Página | Descrição |
-|---|---|---|
-| `/` | Dashboard | Visão geral do torneio |
-| `/selecoes` | Seleções | Estatísticas por seleção |
-| `/jogadores` | Jogadores | Elencos e desempenho individual |
-| `/estadios` | Estádios | Localização e informações das arenas |
-| `/partidas` | Partidas | Calendário e resultados dos jogos |
-| `/ranking` | Ranking de Vitórias | Classificação geral das seleções |
-
----
-
-## ⚙️ Pré-requisitos
-
-- [Python 3.9+](https://www.python.org/)
-- [MySQL Server](https://dev.mysql.com/downloads/mysql/)
-- [MySQL Workbench](https://www.mysql.com/products/workbench/)
-- [pip](https://pip.pypa.io/en/stable/)
+| Rota         | Descrição                      |
+|--------------|--------------------------------|
+| `/`          | Dashboard geral                |
+| `/selecoes`  | Gerenciamento de seleções      |
+| `/jogadores` | Gerenciamento de jogadores     |
+| `/estadios`  | Gerenciamento de estádios      |
+| `/partidas`  | Registro e controle de partidas|
+| `/ranking`   | Ranking de vitórias            |
 
 ---
 
-## 🚀 Como Executar
+## Banco de Dados
 
-### 1. Clone o repositório
+O banco de dados foi desenvolvido em MySQL e está hospedado no Railway. As tabelas principais são:
 
-```bash
-git clone https://github.com/seu-usuario/world-cup-manager-2026.git
-cd world-cup-manager-2026
-```
+| Tabela      | Descrição                                                      |
+|-------------|----------------------------------------------------------------|
+| `selecoes`  | Dados das seleções participantes da Copa                       |
+| `jogadores` | Jogadores cadastrados, vinculados às suas respectivas seleções |
+| `estadios`  | Informações dos estádios que sediam as partidas                |
+| `partidas`  | Partidas registradas, incluindo gols e vencedor               |
 
-### 2. Crie e ative um ambiente virtual
-
-```bash
-python -m venv venv
-
-# Windows
-venv\Scripts\activate
-
-# Linux / macOS
-source venv/bin/activate
-```
-
-### 3. Instale as dependências
-
-```bash
-pip install -r requirements.txt
-```
-
-### 4. Configure o banco de dados
-
-O banco de dados MySQL está hospedado no **Railway**. O arquivo `.env` com as credenciais de acesso será **enviado separadamente** pela equipe — não está no repositório por razões de segurança.
-
-Após receber o arquivo, coloque-o na raiz do projeto:
-
-```
-world-cup-manager-2026/
-├── .env   ← aqui
-├── app.py
-└── ...
-```
-
-> ⚠️ O `.env` contém dados sensíveis. Não compartilhe nem versione esse arquivo.
-
-### 5. Execute a aplicação
-
-```bash
-python app.py
-```
-
-Acesse no navegador: [http://localhost:8050](http://localhost:8050)
-
-> Para deploy em produção, a aplicação expõe o objeto `server` (Flask) compatível com **Gunicorn**:
-> ```bash
-> gunicorn app:server
-> ```
+As tabelas se relacionam por meio de chaves estrangeiras. O banco conta com triggers que atualizam automaticamente o campo de vencedor em `partidas` com base nos gols registrados, eliminando a necessidade de atualização manual.
 
 ---
 
-## 📦 Principais Dependências
+## Integrantes
 
-```
-dash==4.1.0
-dash-bootstrap-components==2.0.4
-plotly==6.7.0
-pandas==3.0.3
-mysql-connector-python==9.7.0
-python-dotenv==1.1.0
-Flask==3.1.3
-numpy==2.3.1
-```
-
-> Lista completa em `requirements.txt`.
+| Nome                   |
+|------------------------|
+| Ana Clara Souza        |
+| Beatriz Kaori          |
+| Lucas Santana          |
+| Luiz Vinícius Santos   |
+| Maria Laura Cordeiro   |
+| Pablo Guilherme Neves  |
 
 ---
 
-## 🗃️ Banco de Dados
+## Objetivo Acadêmico
 
-O banco foi modelado e administrado via **MySQL Workbench**. As principais tabelas são:
-
-- `selecoes` — Dados das seleções participantes
-- `jogadores` — Elenco de cada seleção
-- `estadios` — Arenas e localização
-- `partidas` — Jogos realizados e resultados
-- `fases` — Fases do torneio (grupos, mata-mata)
-
----
-
-## 👥 Integrantes
-
-| Nome |
-|---|
-| Ana Clara Souza |
-| Beatriz Kaori |
-| Lucas Santana |
-| Luiz Vinícius Santos |
-| Maria Laura Cordeiro |
-| Pablo Guilherme Neves |
-
----
-
-> Desenvolvido com ⚽ durante a Copa do Mundo FIFA 2026.
+Este projeto foi desenvolvido como trabalho prático de curso, com o objetivo de aplicar conceitos de desenvolvimento web, modelagem de banco de dados relacional, integração entre front-end e back-end, e hospedagem de aplicações em nuvem. O tema da Copa do Mundo FIFA 2026 foi escolhido como contexto para tornar a aplicação representativa e próxima de um caso de uso real.
